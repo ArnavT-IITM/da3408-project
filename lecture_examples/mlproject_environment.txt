@@ -1,0 +1,33 @@
+SOURCE: DA3408/MLflow/Exercise2_Package_and_Run_MLflow_Project.ipynb
+CELL: 6 (zero-based notebook cell index)
+
+%%writefile iris_project/MLproject
+name: iris-classifier
+
+python_env: python_env.yaml
+
+entry_points:
+  main:
+    parameters:
+      n_estimators: {type: int, default: 100}
+      max_depth: {type: int, default: 5}
+    command: "python train.py --n_estimators {n_estimators} --max_depth {max_depth}"
+
+SOURCE: DA3408/MLflow/Exercise2_Package_and_Run_MLflow_Project.ipynb
+CELL: 8 (zero-based notebook cell index)
+
+%%writefile iris_project/python_env.yaml
+python: "3.12"
+build_dependencies:
+  - pip
+  - setuptools
+dependencies:
+  - scikit-learn
+  - pandas
+  - mlflow
+
+SOURCE: DA3408/MLflow/Exercise2_Package_and_Run_MLflow_Project.ipynb
+CELL: 11 (zero-based notebook cell index)
+
+!mlflow run iris_project -P n_estimators=150 -P max_depth=6 \
+    --experiment-name iris-classifier --env-manager=local

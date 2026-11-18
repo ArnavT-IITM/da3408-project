@@ -1,0 +1,1006 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AirCast API",
+    "version": "1.2.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog": {
+      "get": {
+        "summary": "Catalog",
+        "operationId": "catalog_catalog_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "summary": "Predict",
+        "operationId": "predict_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForecastRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accuracy": {
+      "get": {
+        "summary": "Accuracy",
+        "description": "Error per city so far, and the scored forecast-vs-actual series for one city.",
+        "operationId": "accuracy_accuracy_get",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "City"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "default": 60,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccuracyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/replay": {
+      "post": {
+        "summary": "Replay",
+        "operationId": "replay_replay_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/replay/reset": {
+      "post": {
+        "summary": "Replay Reset",
+        "operationId": "replay_reset_replay_reset_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pipeline": {
+      "get": {
+        "summary": "Pipeline",
+        "description": "Stage records, recent jobs, the real DVC DAG and the end of the CI log.",
+        "operationId": "pipeline_pipeline_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pipeline/run": {
+      "post": {
+        "summary": "Pipeline Run",
+        "description": "Run CI (lint, tests, dvc repro) and deploy the candidate if it passes the gate.",
+        "operationId": "pipeline_run_pipeline_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/PipelineRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/rollback": {
+      "post": {
+        "summary": "Rollback Model",
+        "operationId": "rollback_model_models_rollback_post",
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Status",
+        "operationId": "status_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccuracyPoint": {
+        "properties": {
+          "forecast_date": {
+            "type": "string",
+            "title": "Forecast Date"
+          },
+          "predicted_aqi": {
+            "type": "number",
+            "title": "Predicted Aqi"
+          },
+          "actual_aqi": {
+            "type": "number",
+            "title": "Actual Aqi"
+          },
+          "error": {
+            "type": "number",
+            "title": "Error"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "forecast_date",
+          "predicted_aqi",
+          "actual_aqi",
+          "error",
+          "model_version"
+        ],
+        "title": "AccuracyPoint"
+      },
+      "AccuracyResponse": {
+        "properties": {
+          "simulated_today": {
+            "type": "string",
+            "title": "Simulated Today",
+            "description": "Next day the replay will forecast from."
+          },
+          "last_day": {
+            "type": "string",
+            "title": "Last Day",
+            "description": "Last cutoff date the data supports."
+          },
+          "by_city": {
+            "items": {
+              "$ref": "#/components/schemas/CityAccuracy"
+            },
+            "type": "array",
+            "title": "By City"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/AccuracyPoint"
+            },
+            "type": "array",
+            "title": "Points",
+            "description": "Scored forecasts for `city`, oldest first."
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulated_today",
+          "last_day",
+          "by_city",
+          "points"
+        ],
+        "title": "AccuracyResponse"
+      },
+      "CatalogResponse": {
+        "properties": {
+          "cities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Cities"
+          },
+          "dates": {
+            "$ref": "#/components/schemas/DateRange"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cities",
+          "dates"
+        ],
+        "title": "CatalogResponse"
+      },
+      "CityAccuracy": {
+        "properties": {
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "scored": {
+            "type": "integer",
+            "title": "Scored",
+            "description": "Forecast dates with an observed AQI, each counted once."
+          },
+          "mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mae",
+            "description": "Mean absolute error in AQI points."
+          }
+        },
+        "type": "object",
+        "required": [
+          "city",
+          "scored",
+          "mae"
+        ],
+        "title": "CityAccuracy"
+      },
+      "DateRange": {
+        "properties": {
+          "min": {
+            "type": "string",
+            "title": "Min"
+          },
+          "max": {
+            "type": "string",
+            "title": "Max"
+          }
+        },
+        "type": "object",
+        "required": [
+          "min",
+          "max"
+        ],
+        "title": "DateRange"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorResponse"
+      },
+      "ForecastRequest": {
+        "properties": {
+          "city": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "City",
+            "examples": [
+              "Delhi"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date",
+            "description": "Observation cutoff D; the forecast is for D + 1."
+          }
+        },
+        "type": "object",
+        "required": [
+          "city",
+          "date"
+        ],
+        "title": "ForecastRequest"
+      },
+      "ForecastResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "as_of": {
+            "type": "string",
+            "title": "As Of",
+            "description": "Observation date D."
+          },
+          "forecast_date": {
+            "type": "string",
+            "title": "Forecast Date",
+            "description": "D + 1."
+          },
+          "predicted_aqi": {
+            "type": "number",
+            "title": "Predicted Aqi"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "model_run_id": {
+            "type": "string",
+            "title": "Model Run Id",
+            "description": "MLflow run that trained the model which answered."
+          },
+          "actual_aqi": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Aqi",
+            "description": "Observed AQI, null until replay reaches it."
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error",
+            "description": "Absolute error once observed."
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "guidance": {
+            "type": "string",
+            "title": "Guidance"
+          },
+          "today_aqi": {
+            "type": "number",
+            "title": "Today Aqi",
+            "description": "Observed AQI on D, for comparison."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "city",
+          "as_of",
+          "forecast_date",
+          "predicted_aqi",
+          "model_version",
+          "model_run_id",
+          "actual_aqi",
+          "error",
+          "created_at",
+          "category",
+          "guidance",
+          "today_aqi"
+        ],
+        "title": "ForecastResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JobAccepted": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id"
+        ],
+        "title": "JobAccepted"
+      },
+      "JobRecord": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "started_at": {
+            "type": "number",
+            "title": "Started At"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "result": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "started_at"
+        ],
+        "title": "JobRecord"
+      },
+      "ModelState": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "previous_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "status",
+          "previous_version"
+        ],
+        "title": "ModelState"
+      },
+      "PipelineRequest": {
+        "properties": {
+          "force": {
+            "type": "boolean",
+            "title": "Force",
+            "description": "Rerun every DVC stage instead of using the cache.",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "PipelineRequest"
+      },
+      "PipelineResponse": {
+        "properties": {
+          "running": {
+            "type": "boolean",
+            "title": "Running"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/StageRecord"
+            },
+            "type": "array",
+            "title": "Stages"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/JobRecord"
+            },
+            "type": "array",
+            "title": "Runs"
+          },
+          "dag": {
+            "type": "string",
+            "title": "Dag",
+            "description": "Mermaid text from `dvc dag --mermaid`."
+          },
+          "log_tail": {
+            "type": "string",
+            "title": "Log Tail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "running",
+          "stages",
+          "runs",
+          "dag",
+          "log_tail"
+        ],
+        "title": "PipelineResponse"
+      },
+      "ReplayRequest": {
+        "properties": {
+          "days": {
+            "type": "integer",
+            "maximum": 182.0,
+            "minimum": 1.0,
+            "title": "Days",
+            "description": "Historical days to advance.",
+            "default": 7
+          },
+          "delay": {
+            "type": "number",
+            "maximum": 10.0,
+            "minimum": 0.1,
+            "title": "Delay",
+            "description": "Seconds per simulated day.",
+            "default": 0.5
+          }
+        },
+        "type": "object",
+        "title": "ReplayRequest"
+      },
+      "ReplayState": {
+        "properties": {
+          "running": {
+            "type": "boolean",
+            "title": "Running"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "running",
+          "status"
+        ],
+        "title": "ReplayState"
+      },
+      "ResetResponse": {
+        "properties": {
+          "simulated_today": {
+            "type": "string",
+            "title": "Simulated Today"
+          },
+          "unscored": {
+            "type": "integer",
+            "title": "Unscored",
+            "description": "Forecasts whose observed AQI was cleared."
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulated_today",
+          "unscored"
+        ],
+        "title": "ResetResponse"
+      },
+      "StageRecord": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows"
+          },
+          "rows_per_second": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows Per Second"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "name",
+          "status"
+        ],
+        "title": "StageRecord"
+      },
+      "StatusResponse": {
+        "properties": {
+          "services": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object",
+            "title": "Services"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelState"
+          },
+          "links": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Links"
+          },
+          "replay": {
+            "$ref": "#/components/schemas/ReplayState"
+          }
+        },
+        "type": "object",
+        "required": [
+          "services",
+          "model",
+          "links",
+          "replay"
+        ],
+        "title": "StatusResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

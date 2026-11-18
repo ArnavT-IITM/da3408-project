@@ -1,0 +1,13 @@
+{
+  "rows": 2589083,
+  "missing_ratio": {
+    "PM2.5": 0.2501615436816819,
+    "PM10": 0.4322966857377689,
+    "NO2": 0.20430901597206425,
+    "CO": 0.19284897394173922
+  },
+  "negative_values_to_mask": 0,
+  "unmatched_station_rows_excluded": 0,
+  "missing_target_rows": 4681,
+  "policy": "Missing/negative pollutant values become NaN; missing AQI targets are never filled."
+}

@@ -1,0 +1,37 @@
+{
+  "run_id": "01acd7bc7baf4046b46879fe52b02e07",
+  "experiment_id": "1",
+  "model_uri": "models:/m-7db263888d8344d389ea392f3dd6dbcc",
+  "metrics": {
+    "mae": 19.137719828837035,
+    "rmse": 30.02081644929274,
+    "baseline_mae": 23.123287671232877,
+    "training_seconds": 0.2146831919963006,
+    "validation_rows": 1095,
+    "training_rows": 4122
+  },
+  "prediction_min": 51.43273027355079,
+  "prediction_max": 553.5142129214757,
+  "all_finite": true,
+  "data_sha256": "8d454c1cbbfc9435f40e263725846d385c3aa9e4af4bb4fe9419843fd67326f6",
+  "data_config": {
+    "cities": [
+      "Delhi",
+      "Chennai",
+      "Bengaluru"
+    ],
+    "pollutants": [
+      "PM2.5",
+      "PM10",
+      "NO2",
+      "CO"
+    ],
+    "min_station_hours": 8,
+    "train_end": "2018-12-31",
+    "validation_end": "2019-12-31",
+    "replay_end": "2020-06-30"
+  },
+  "git_commit": "c474cf6b48d2220380fdd92411e2b008552d8e62",
+  "git_dirty": "true",
+  "git_dirty_files": ".dvc/config,HANDOFF.md,README.md,app/api.py,app/common.py,app/deploy.py,app/features.py,app/metrics.py,app/model.py,app/operations.py,app/pipeline.py,app/serve.py,app/store.py,compose.yaml,docs/README.md,docs/architecture.md,docs/decisions.md,docs/lld.md,docs/openapi.json,docs/rubric-checklist.md,docs/test-plan.md,docs/test-report.md,docs/user-manual.md,docs/viva-guide.md,dvc.lock,evidence/browser-e2e.json,evidence/browser-ui-details.json,evidence/final-candidate.json,evidence/final-evaluation.j"
+}

@@ -1,0 +1,195 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python -m app.pipeline ingest
+    deps:
+    - path: app/common.py
+      hash: md5
+      md5: 335b44ff8172ab8b26ab228dc1c611f6
+      size: 2067
+    - path: app/pipeline.py
+      hash: md5
+      md5: b6f6b810bb200062bb6ffc0374aeba22
+      size: 13619
+    - path: data/raw
+      hash: md5
+      md5: c3e13a8ae566b0744e67a0f64935ac25.dir
+      size: 222264297
+      nfiles: 4
+    outs:
+    - path: artifacts/ingestion.json
+      hash: md5
+      md5: a0db119c24a483e2cbc518794ee02481
+      size: 868
+  validate:
+    cmd: python -m app.pipeline validate
+    deps:
+    - path: app/pipeline.py
+      hash: md5
+      md5: b6f6b810bb200062bb6ffc0374aeba22
+      size: 13619
+    - path: artifacts/ingestion.json
+      hash: md5
+      md5: a0db119c24a483e2cbc518794ee02481
+      size: 868
+    params:
+      params.yaml:
+        data.cities:
+        - Delhi
+        - Chennai
+        - Bengaluru
+        data.pollutants:
+        - PM2.5
+        - PM10
+        - NO2
+        - CO
+    outs:
+    - path: artifacts/validation.json
+      hash: md5
+      md5: eddac7dffe51cdab3d1f3f151c19c8ff
+      size: 376
+  transform:
+    cmd: python -m app.pipeline transform
+    deps:
+    - path: app/features.py
+      hash: md5
+      md5: f8331ae1f18acc64a48f828952e19443
+      size: 2863
+    - path: app/pipeline.py
+      hash: md5
+      md5: b6f6b810bb200062bb6ffc0374aeba22
+      size: 13619
+    - path: artifacts/ingestion.json
+      hash: md5
+      md5: a0db119c24a483e2cbc518794ee02481
+      size: 868
+    - path: artifacts/validation.json
+      hash: md5
+      md5: eddac7dffe51cdab3d1f3f151c19c8ff
+      size: 376
+    params:
+      params.yaml:
+        data:
+          cities:
+          - Delhi
+          - Chennai
+          - Bengaluru
+          pollutants:
+          - PM2.5
+          - PM10
+          - NO2
+          - CO
+          min_station_hours: 8
+          train_end: '2018-12-31'
+          validation_end: '2019-12-31'
+          replay_end: '2020-06-30'
+    outs:
+    - path: artifacts/features.json
+      hash: md5
+      md5: 07762d538d52354aa2e65913b5139909
+      size: 328
+    - path: data/features.parquet
+      hash: md5
+      md5: 5eb592336d627e400bcfe0dae2929d6b
+      size: 313604
+  train:
+    cmd: mlflow run . -e train --env-manager local --experiment-name AirCast
+    deps:
+    - path: MLproject
+      hash: md5
+      md5: 253a57f66fd130f1eeda39b043c2deca
+      size: 183
+    - path: app/common.py
+      hash: md5
+      md5: 335b44ff8172ab8b26ab228dc1c611f6
+      size: 2067
+    - path: app/features.py
+      hash: md5
+      md5: f8331ae1f18acc64a48f828952e19443
+      size: 2863
+    - path: app/model.py
+      hash: md5
+      md5: 80375c03029d8d956f74e5a38b61700b
+      size: 645
+    - path: app/pipeline.py
+      hash: md5
+      md5: b6f6b810bb200062bb6ffc0374aeba22
+      size: 13619
+    - path: artifacts/features.json
+      hash: md5
+      md5: 07762d538d52354aa2e65913b5139909
+      size: 328
+    - path: artifacts/ingestion.json
+      hash: md5
+      md5: a0db119c24a483e2cbc518794ee02481
+      size: 868
+    - path: artifacts/validation.json
+      hash: md5
+      md5: eddac7dffe51cdab3d1f3f151c19c8ff
+      size: 376
+    - path: data/features.parquet
+      hash: md5
+      md5: 5eb592336d627e400bcfe0dae2929d6b
+      size: 313604
+    - path: python_env.yaml
+      hash: md5
+      md5: 21eb10a05556f6a85bd86226bbdcfb46
+      size: 110
+    - path: requirements.txt
+      hash: md5
+      md5: cb3ccd906201df126beea39b9fcc28c0
+      size: 381
+    params:
+      params.yaml:
+        data.train_end: '2018-12-31'
+        data.validation_end: '2019-12-31'
+        gate.min_validation_rows: 30
+        model:
+          max_iter: 80
+          max_leaf_nodes: 15
+          learning_rate: 0.08
+          seed: 42
+    outs:
+    - path: artifacts/candidate.json
+      hash: md5
+      md5: bf597ce8375d4d78979a2cc81f5ebe7d
+      size: 1452
+    - path: artifacts/feature_importance.png
+      hash: md5
+      md5: 686a594022efeecfb2aaf657f257e69d
+      size: 24997
+    - path: artifacts/per_city.json
+      hash: md5
+      md5: a36488f3b0627cd26d2a0dff55e0f211
+      size: 99
+    - path: artifacts/reference.json
+      hash: md5
+      md5: 1ff11cec804e85d7345f60657323b174
+      size: 2969
+    - path: artifacts/validation_predictions.csv
+      hash: md5
+      md5: b41cb9d78703d3b83919585c6b0d8e99
+      size: 79261
+  evaluate:
+    cmd: python -m app.pipeline evaluate
+    deps:
+    - path: app/pipeline.py
+      hash: md5
+      md5: b6f6b810bb200062bb6ffc0374aeba22
+      size: 13619
+    - path: artifacts/candidate.json
+      hash: md5
+      md5: bf597ce8375d4d78979a2cc81f5ebe7d
+      size: 1452
+    params:
+      params.yaml:
+        gate:
+          min_validation_rows: 30
+          max_mae: 150.0
+          min_prediction: 0.0
+          max_prediction: 1000.0
+    outs:
+    - path: artifacts/evaluation.json
+      hash: md5
+      md5: 87c557caf636f20d57a16171f5147a32
+      size: 415

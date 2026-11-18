@@ -1,0 +1,6 @@
+FROM nginx:1.28-alpine
+COPY frontend/ /usr/share/nginx/html/
+COPY infra/nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY infra/frontend-config.sh /docker-entrypoint.d/40-aircast-config.sh
+RUN chmod +x /docker-entrypoint.d/40-aircast-config.sh
+EXPOSE 80 443

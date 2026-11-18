@@ -1,0 +1,189 @@
+{
+  "frontend": "https://localhost:8443",
+  "started_at_unix": 1794700916.1815913,
+  "after_reset": [
+    {
+      "city": "Delhi",
+      "scored": 1,
+      "mae": 127.40118964919907
+    },
+    {
+      "city": "Chennai",
+      "scored": 1,
+      "mae": 19.897381750458607
+    },
+    {
+      "city": "Bengaluru",
+      "scored": 1,
+      "mae": 12.504580854096005
+    }
+  ],
+  "after_goto_forward": "2020-01-20",
+  "after_goto_back": {
+    "simulated_today": "2020-01-04",
+    "by_city": [
+      {
+        "city": "Delhi",
+        "scored": 4,
+        "mae": 39.082700672411676
+      },
+      {
+        "city": "Chennai",
+        "scored": 4,
+        "mae": 15.905016357714985
+      },
+      {
+        "city": "Bengaluru",
+        "scored": 4,
+        "mae": 7.087691439822869
+      }
+    ]
+  },
+  "after_advance": [
+    {
+      "city": "Delhi",
+      "scored": 4,
+      "mae": 39.082700672411676
+    },
+    {
+      "city": "Chennai",
+      "scored": 4,
+      "mae": 15.905016357714985
+    },
+    {
+      "city": "Bengaluru",
+      "scored": 4,
+      "mae": 7.087691439822869
+    }
+  ],
+  "failed_run": {
+    "id": "284c9f1cb4a8",
+    "cause": "ValueError: Candidate failed the configured acceptance gate; current model is unchanged."
+  },
+  "status": "passed",
+  "finished_at_unix": 1794700942.0828109,
+  "checks": [
+    {
+      "name": "Start over returns to the first simulated date",
+      "passed": true
+    },
+    {
+      "name": "Every city has a forecast for tomorrow",
+      "passed": true
+    },
+    {
+      "name": "Each forecast is compared with today",
+      "passed": true
+    },
+    {
+      "name": "Each forecast shows its category and advice",
+      "passed": true
+    },
+    {
+      "name": "The AQI colour key is shown",
+      "passed": true
+    },
+    {
+      "name": "Next day moves the forecast to the following day",
+      "passed": true
+    },
+    {
+      "name": "The clock is shared with the Accuracy tab",
+      "passed": true
+    },
+    {
+      "name": "Advancing moves the simulated date",
+      "passed": true
+    },
+    {
+      "name": "Per-city scores appear",
+      "passed": true
+    },
+    {
+      "name": "Forecast and actual lines are drawn",
+      "passed": true
+    },
+    {
+      "name": "Scored days are listed",
+      "passed": true
+    },
+    {
+      "name": "Go to a later date plays forward to it",
+      "passed": true
+    },
+    {
+      "name": "Go to an earlier date starts over and plays forward",
+      "passed": true
+    },
+    {
+      "name": "Choosing a city card switches the chart",
+      "passed": true
+    },
+    {
+      "name": "Forecast tab follows the clock after a jump",
+      "passed": true
+    },
+    {
+      "name": "Pipeline graph matches dvc dag",
+      "passed": true
+    },
+    {
+      "name": "Graph fits the panel on desktop",
+      "passed": true
+    },
+    {
+      "name": "Stage numbers are compact",
+      "passed": true
+    },
+    {
+      "name": "Tool links are present",
+      "passed": true
+    },
+    {
+      "name": "Model switch names its target",
+      "passed": true
+    },
+    {
+      "name": "Seven services listed",
+      "passed": true
+    },
+    {
+      "name": "The clock is hidden on Operations",
+      "passed": true
+    },
+    {
+      "name": "A failed run shows its root cause first",
+      "passed": true
+    },
+    {
+      "name": "An opened error stays open across the automatic refresh",
+      "passed": true
+    },
+    {
+      "name": "Forecast fits a 375-pixel phone",
+      "passed": true
+    },
+    {
+      "name": "Accuracy fits a 375-pixel phone",
+      "passed": true
+    },
+    {
+      "name": "Operations fits a 375-pixel phone",
+      "passed": true
+    },
+    {
+      "name": "Help opens",
+      "passed": true
+    },
+    {
+      "name": "Help closes",
+      "passed": true
+    },
+    {
+      "name": "No JavaScript exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 30,
+  "failed": 0
+}

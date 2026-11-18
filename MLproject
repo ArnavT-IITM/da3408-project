@@ -1,0 +1,7 @@
+name: aircast
+python_env: python_env.yaml
+entry_points:
+  train:
+    command: "python -m app.pipeline train"
+  test:
+    command: "python -m pytest -q --junitxml=artifacts/tests.xml"

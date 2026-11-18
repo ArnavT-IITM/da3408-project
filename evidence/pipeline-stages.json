@@ -1,0 +1,78 @@
+{
+  "stages": [
+    {
+      "name": "ingest",
+      "status": "success",
+      "started_at": 1794700739.64232,
+      "ended_at": 1794700739.9484065,
+      "duration_seconds": 0.30608081817626953,
+      "rows": 2589083,
+      "rows_per_second": 8458821.481942615,
+      "error": null
+    },
+    {
+      "name": "validate",
+      "status": "success",
+      "started_at": 1794700740.7125027,
+      "ended_at": 1794700742.8229916,
+      "duration_seconds": 2.110483169555664,
+      "rows": 2589083,
+      "rows_per_second": 1226772.6354553679,
+      "error": null
+    },
+    {
+      "name": "transform",
+      "status": "success",
+      "started_at": 1794700743.5126045,
+      "ended_at": 1794700755.5672088,
+      "duration_seconds": 12.054589986801147,
+      "rows": 2589083,
+      "rows_per_second": 214779.847579623,
+      "error": null,
+      "output_rows": 6027
+    },
+    {
+      "name": "train",
+      "status": "success",
+      "started_at": 1794700759.2004962,
+      "ended_at": 1794700762.8488457,
+      "duration_seconds": 3.6483445167541504,
+      "rows": 4122,
+      "rows_per_second": 1129.8275097296048,
+      "error": null,
+      "run_id": "01acd7bc7baf4046b46879fe52b02e07",
+      "experiment_id": "1",
+      "mae": 19.137719828837035,
+      "rmse": 30.02081644929274,
+      "baseline_mae": 23.123287671232877,
+      "training_seconds": 0.2146831919963006,
+      "validation_rows": 1095,
+      "training_rows": 4122
+    },
+    {
+      "name": "evaluate",
+      "status": "success",
+      "started_at": 1794700764.8714573,
+      "ended_at": 1794700764.87379,
+      "duration_seconds": 0.002330303192138672,
+      "rows": null,
+      "rows_per_second": null,
+      "error": null,
+      "validation_rows": 1095,
+      "run_id": "01acd7bc7baf4046b46879fe52b02e07"
+    },
+    {
+      "name": "deploy",
+      "status": "success",
+      "started_at": 1794700765.1362374,
+      "ended_at": 1794700773.2662764,
+      "duration_seconds": 8.130038499832153,
+      "rows": null,
+      "rows_per_second": null,
+      "error": null,
+      "version": "7",
+      "run_id": "01acd7bc7baf4046b46879fe52b02e07"
+    }
+  ],
+  "dag": "flowchart TD\n\tnode1[\"data/raw.dvc\"]\n\tnode2[\"evaluate\"]\n\tnode3[\"ingest\"]\n\tnode4[\"train\"]\n\tnode5[\"transform\"]\n\tnode6[\"validate\"]\n\tnode1-->node3\n\tnode3-->node4\n\tnode3-->node5\n\tnode3-->node6\n\tnode4-->node2\n\tnode5-->node4\n\tnode6-->node4\n\tnode6-->node5\n"
+}

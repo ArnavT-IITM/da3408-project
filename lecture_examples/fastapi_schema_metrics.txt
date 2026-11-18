@@ -1,0 +1,29 @@
+SOURCE: DA3408/rest_app.py
+LINES: 20-45 (one-based, inclusive)
+
+class Customer(BaseModel):                       # schema = contract with the client
+    tenure_months: int = Field(ge=0, le=120)
+    monthly_charge: float = Field(ge=0, le=500)
+    support_calls: int = Field(ge=0)
+    late_payments: int = Field(ge=0)
+    data_usage_gb: float = Field(ge=0)
+    contract_months: int = Field(ge=1, le=60)
+    num_products: int = Field(ge=1, le=20)
+    age: int = Field(ge=18, le=110)
+
+class PredictRequest(BaseModel):
+    instances: List[Customer] = Field(min_length=1, max_length=1000)
+
+app = FastAPI(title="Churn model service")
+STATS = {"requests": 0, "errors": 0}
+
+@app.middleware("http")
+async def timing(request: Request, call_next):   # cheap observability: latency header + counters
+    t0 = time.perf_counter()
+    resp = await call_next(request)
+    resp.headers["X-Process-Time-ms"] = f"{(time.perf_counter()-t0)*1000:.2f}"
+    STATS["requests"] += 1
+    STATS["errors"] += int(resp.status_code >= 400)
+    return resp
+
+@app.get("/healthz")

@@ -1,0 +1,192 @@
+{
+  "started_at": 1794700723.8558033,
+  "base_url": "http://127.0.0.1:18000",
+  "checks": [
+    {
+      "name": "real_mlflow_prediction",
+      "passed": true,
+      "observed": {
+        "id": 589,
+        "city": "Delhi",
+        "as_of": "2020-02-01",
+        "forecast_date": "2020-02-02",
+        "predicted_aqi": 253.1825500071032,
+        "model_version": "6",
+        "model_run_id": "571f60dc86c0474d9fc72d16d7927f7d",
+        "actual_aqi": null,
+        "error": null,
+        "created_at": 1794700723.926524,
+        "category": "Poor",
+        "guidance": "Breathing discomfort may occur with prolonged exposure.",
+        "today_aqi": 244.0
+      }
+    },
+    {
+      "name": "invalid_input",
+      "passed": true,
+      "observed": 422
+    },
+    {
+      "name": "real_delayed_feedback",
+      "passed": true,
+      "observed": {
+        "id": "9d924403933c",
+        "kind": "replay",
+        "status": "success",
+        "started_at": 1794700723.9368935,
+        "ended_at": 1794700725.1234558,
+        "error": null,
+        "result": {
+          "running": false,
+          "status": "success",
+          "completed_days": 5,
+          "total_days": 5,
+          "date": "2020-01-08"
+        }
+      }
+    },
+    {
+      "name": "rejected_candidate_preserves_serving",
+      "passed": true,
+      "observed": {
+        "id": "284c9f1cb4a8",
+        "kind": "pipeline",
+        "status": "failed",
+        "started_at": 1794700725.9795842,
+        "ended_at": 1794700732.6584873,
+        "error": "ValueError: Candidate failed the configured acceptance gate; current model is unchanged.\n\nPipeline failed (exit 255). Last output:\ndocs.pytest.org/en/stable/how-to/capture-warnings.html\n----------- Generated html report: file:///app/artifacts/tests.html ------------\n54 passed, 1 warning in 1.10s\n'data/raw.dvc' didn't change, skipping\nStage 'ingest' didn't change, skipping\nStage 'validate' didn't change, skipping\nStage 'transform' didn't change, skipping\nStage 'train' didn't change, skipping\nRunning stage 'evaluate':\n> python -m app.pipeline evaluate\n2026-11-14 23:58:52,459 ERROR aircast.pipeline Stage evaluate failed\nTraceback (most recent call last):\n  File \"/app/app/pipeline.py\", line 303, in run_stage\n    values = globals()[name](config())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/app/pipeline.py\", line 292, in evaluate\n    raise ValueError(\"Candidate failed the configured acceptance gate; current model is unchanged.\")\nValueError: Candidate failed the configured acceptance gate; current model is unchanged.\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/app/app/pipeline.py\", line 319, in <module>\n    run_stage(sys.argv[1])\n  File \"/app/app/pipeline.py\", line 303, in run_stage\n    values = globals()[name](config())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/app/pipeline.py\", line 292, in evaluate\n    raise ValueError(\"Candidate failed the configured acceptance gate; current model is unchanged.\")\nValueError: Candidate failed the configured acceptance gate; current model is unchanged.\nERROR: failed to reproduce 'evaluate': failed to run: python -m app.pipeline evaluate, exited with 1\n",
+        "result": null
+      }
+    },
+    {
+      "name": "retraining_reloads_real_server",
+      "passed": true,
+      "observed": {
+        "id": "62a3719fdba1",
+        "kind": "pipeline",
+        "status": "success",
+        "started_at": 1794700733.0817535,
+        "ended_at": 1794700773.2675745,
+        "error": null,
+        "result": {
+          "version": "7",
+          "run_id": "01acd7bc7baf4046b46879fe52b02e07",
+          "model_uri": "models:/aircast-aqi/7",
+          "features_path": "artifacts/serving/01acd7bc7baf4046b46879fe52b02e07/features.parquet",
+          "reference_path": "artifacts/serving/01acd7bc7baf4046b46879fe52b02e07/reference.json",
+          "data_config": {
+            "cities": [
+              "Delhi",
+              "Chennai",
+              "Bengaluru"
+            ],
+            "pollutants": [
+              "PM2.5",
+              "PM10",
+              "NO2",
+              "CO"
+            ],
+            "min_station_hours": 8,
+            "train_end": "2018-12-31",
+            "validation_end": "2019-12-31",
+            "replay_end": "2020-06-30"
+          },
+          "experiment_id": "1",
+          "previous": {
+            "version": "6",
+            "run_id": "571f60dc86c0474d9fc72d16d7927f7d",
+            "model_uri": "models:/aircast-aqi/6",
+            "features_path": "artifacts/serving/571f60dc86c0474d9fc72d16d7927f7d/features.parquet",
+            "reference_path": "artifacts/serving/571f60dc86c0474d9fc72d16d7927f7d/reference.json",
+            "data_config": {
+              "cities": [
+                "Delhi",
+                "Chennai",
+                "Bengaluru"
+              ],
+              "pollutants": [
+                "PM2.5",
+                "PM10",
+                "NO2",
+                "CO"
+              ],
+              "min_station_hours": 8,
+              "train_end": "2018-12-31",
+              "validation_end": "2019-12-31",
+              "replay_end": "2020-06-30"
+            },
+            "experiment_id": "1"
+          }
+        }
+      }
+    },
+    {
+      "name": "rollback_verified_by_prediction",
+      "passed": true,
+      "observed": {
+        "id": "ee8f8965e9bf",
+        "kind": "rollback",
+        "status": "success",
+        "started_at": 1794700773.4506018,
+        "ended_at": 1794700781.4874928,
+        "error": null,
+        "result": {
+          "version": "6",
+          "run_id": "571f60dc86c0474d9fc72d16d7927f7d",
+          "model_uri": "models:/aircast-aqi/6",
+          "features_path": "artifacts/serving/571f60dc86c0474d9fc72d16d7927f7d/features.parquet",
+          "reference_path": "artifacts/serving/571f60dc86c0474d9fc72d16d7927f7d/reference.json",
+          "data_config": {
+            "cities": [
+              "Delhi",
+              "Chennai",
+              "Bengaluru"
+            ],
+            "pollutants": [
+              "PM2.5",
+              "PM10",
+              "NO2",
+              "CO"
+            ],
+            "min_station_hours": 8,
+            "train_end": "2018-12-31",
+            "validation_end": "2019-12-31",
+            "replay_end": "2020-06-30"
+          },
+          "experiment_id": "1",
+          "previous": {
+            "version": "7",
+            "run_id": "01acd7bc7baf4046b46879fe52b02e07",
+            "model_uri": "models:/aircast-aqi/7",
+            "features_path": "artifacts/serving/01acd7bc7baf4046b46879fe52b02e07/features.parquet",
+            "reference_path": "artifacts/serving/01acd7bc7baf4046b46879fe52b02e07/reference.json",
+            "data_config": {
+              "cities": [
+                "Delhi",
+                "Chennai",
+                "Bengaluru"
+              ],
+              "pollutants": [
+                "PM2.5",
+                "PM10",
+                "NO2",
+                "CO"
+              ],
+              "min_station_hours": 8,
+              "train_end": "2018-12-31",
+              "validation_end": "2019-12-31",
+              "replay_end": "2020-06-30"
+            },
+            "experiment_id": "1"
+          }
+        }
+      }
+    },
+    {
+      "name": "prometheus_export",
+      "passed": true,
+      "observed": "HTTP200; persisted prediction error metrics present"
+    }
+  ],
+  "finished_at": 1794700781.5656426
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "file": "mlflow_alias_reload.txt",
+    "source": "DA3408/Lecture 10 -- MLflow_Serving_Exercise.ipynb",
+    "cells_zero_based": [
+      20,
+      21,
+      22
+    ],
+    "source_sha256": "c676d6e0cff3aba4b601a11337b862f0c2bd52a0a3818007f7ea6a9daa881986"
+  },
+  {
+    "file": "mlproject_environment.txt",
+    "source": "DA3408/MLflow/Exercise2_Package_and_Run_MLflow_Project.ipynb",
+    "cells_zero_based": [
+      6,
+      8,
+      11
+    ],
+    "source_sha256": "24238ea732db641758d879256fab8032e7c9fbe91ffbd42d93bd32345adbd74a"
+  },
+  {
+    "file": "spark_aggregate_broadcast.txt",
+    "source": "DA3408/Lecture 7 -- Spark_ETL_Exercise.ipynb",
+    "cells_zero_based": [
+      8,
+      19
+    ],
+    "source_sha256": "c01433750de4e5d40f6f7748d3c988818ef421f295c21d2b11a6fcf1901f9514"
+  },
+  {
+    "file": "prometheus_metrics.txt",
+    "source": "DA3408/Monitoring/prom_client.py",
+    "lines_one_based": [
+      1,
+      34
+    ],
+    "source_sha256": "ae9681d18e8885412625db888aa73f3820c280953ed43fb6a835c471b0e4a3a0"
+  },
+  {
+    "file": "fastapi_schema_metrics.txt",
+    "source": "DA3408/rest_app.py",
+    "lines_one_based": [
+      20,
+      45
+    ],
+    "source_sha256": "a74ec4f23000c800edfe8586c09e79292516afdda76c2d6dd705a2e4264ca934"
+  },
+  {
+    "file": "dvc_reproduction.txt",
+    "source": "DA3408/Lecture 11 -- DVC for Continuous Integration.pdf",
+    "pdf_page_one_based": 12,
+    "source_sha256": "34ece39368be40ea15f77d43f4aca417fb3264a22ac0a4d778437bca74f95d77"
+  }
+]

@@ -1,0 +1,19 @@
+data:
+  cities: [Delhi, Chennai, Bengaluru]
+  pollutants: [PM2.5, PM10, NO2, CO]
+  min_station_hours: 8
+  train_end: '2018-12-31'
+  validation_end: '2019-12-31'
+  replay_end: '2020-06-30'
+model:
+  max_iter: 80
+  max_leaf_nodes: 15
+  learning_rate: 0.08
+  seed: 42
+gate:
+  min_validation_rows: 30
+  max_mae: 150.0
+  min_prediction: 0.0
+  max_prediction: 1000.0
+monitoring:
+  drift_window: 30

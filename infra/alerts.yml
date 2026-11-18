@@ -1,0 +1,39 @@
+groups:
+  - name: aircast
+    rules:
+      - alert: AircastExporterDown
+        expr: up{job="aircast"} == 0
+        for: 15s
+        labels:
+          severity: warning
+        annotations:
+          summary: AirCast API metrics cannot be scraped
+      - alert: AircastServiceDown
+        expr: aircast_service_up == 0
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "AirCast service {{ $labels.service }} is unavailable"
+      - alert: AircastInputDistributionChanged
+        expr: aircast_drift_score > 1.0
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Input distribution changed for {{ $labels.city }}"
+          description: Investigate data coverage and recent forecast errors before retraining.
+      - alert: AircastMissingPollutants
+        expr: aircast_data_missing_ratio > 0.5
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than half of {{ $labels.pollutant }} observations are missing"
+      - alert: AircastPipelineStale
+        expr: time() - aircast_pipeline_last_success_timestamp_seconds > 604800
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: No successful pipeline run has been recorded for seven days

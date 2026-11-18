@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AirCast: next-day air quality forecasts for Delhi, Chennai and Bengaluru.">
+  <title>AirCast</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e8b52f'/%3E%3Cpath d='M8 13h12a3 3 0 1 0-3-3M8 19h16' stroke='%2314202b' stroke-width='2.4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>AirCast</div>
+      <nav class="nav" role="tablist" aria-label="Sections">
+        <button role="tab" id="tab-forecast" aria-controls="view-forecast" aria-selected="true" data-view="forecast">Forecast</button>
+        <button role="tab" id="tab-accuracy" aria-controls="view-accuracy" aria-selected="false" data-view="accuracy">Accuracy</button>
+        <button role="tab" id="tab-operations" aria-controls="view-operations" aria-selected="false" data-view="operations">Operations</button>
+      </nav>
+      <div class="top-tools">
+        <span class="conn" id="conn" role="status"><i class="dot"></i><span id="conn-text">Connecting</span></span>
+        <button class="ghost small" id="help-open" type="button">Help</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <div class="toast" id="toast" role="alert" hidden><span id="toast-text"></span><button type="button" id="toast-close" aria-label="Dismiss">×</button></div>
+
+    <!-- One simulated clock shared by Forecast and Accuracy -->
+    <section class="clockbar" id="clockbar" aria-label="Simulated date">
+      <div class="clock-now">
+        <span>Today in AirCast</span>
+        <strong id="sim-date">—</strong>
+        <span id="sim-left"></span>
+      </div>
+      <div class="clock-actions">
+        <button class="primary next" type="button" data-advance="1">Next day ›</button>
+        <button class="secondary" type="button" data-advance="7">+1 week</button>
+        <button class="secondary" type="button" data-advance="30">+1 month</button>
+        <form class="goto" id="goto-form"><label for="goto-date">Jump to</label><input type="date" id="goto-date" required><button class="secondary" type="submit" id="goto">Go</button></form>
+        <button class="ghost" type="button" id="reset">Start over</button>
+      </div>
+      <div class="progress" id="progress" hidden><span id="progress-bar"></span></div>
+      <p class="note clock-note" id="sim-status" role="status"></p>
+    </section>
+
+    <!-- Forecast: tomorrow for every city, from the simulated today -->
+    <section id="view-forecast" role="tabpanel" aria-labelledby="tab-forecast">
+      <h1>Tomorrow's air quality</h1>
+      <p class="lead" id="fc-date">Loading…</p>
+      <div class="fc-grid" id="fc-grid" aria-live="polite" aria-busy="false"></div>
+      <section class="panel">
+        <h2>What the numbers mean</h2>
+        <ul class="aqi-key">
+          <li><i data-c="good"></i><b>Good</b><span>0 to 50</span></li>
+          <li><i data-c="satisfactory"></i><b>Satisfactory</b><span>51 to 100</span></li>
+          <li><i data-c="moderate"></i><b>Moderate</b><span>101 to 200</span></li>
+          <li><i data-c="poor"></i><b>Poor</b><span>201 to 300</span></li>
+          <li><i data-c="very-poor"></i><b>Very poor</b><span>301 to 400</span></li>
+          <li><i data-c="severe"></i><b>Severe</b><span>above 400</span></li>
+        </ul>
+        <p class="note">Indian (CPCB) air quality index. Lower is better.</p>
+      </section>
+    </section>
+
+    <!-- Accuracy: forecasts whose day has passed, compared with what happened -->
+    <section id="view-accuracy" role="tabpanel" aria-labelledby="tab-accuracy" hidden>
+      <h1>How accurate is it?</h1>
+      <p class="lead">Every forecast is checked once its day has passed. Press Next day above to check more of them.</p>
+      <p class="note">Tip: India's COVID-19 lockdown began on 25 March 2020. Jump to early March, then to mid-April, and watch the error.</p>
+
+      <div class="city-scores" id="city-scores"></div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Forecast vs. what happened · <span id="chart-city">Delhi</span></h2>
+          <div class="legend"><span><i class="key forecast"></i>Forecast</span><span><i class="key actual"></i>Actual</span></div>
+        </div>
+        <div class="chart" id="chart"><p class="empty">Press Next day a few times to see results here.</p></div>
+      </section>
+
+      <section class="panel">
+        <h2>Latest checked days</h2>
+        <div class="table"><table><thead><tr><th>Day</th><th class="num">Forecast</th><th class="num">Actual</th><th class="num">Off by</th></tr></thead><tbody id="scored"><tr><td colspan="4" class="empty">Nothing checked yet.</td></tr></tbody></table></div>
+      </section>
+    </section>
+
+    <!-- Operations: for the person running the system -->
+    <section id="view-operations" role="tabpanel" aria-labelledby="tab-operations" hidden>
+      <h1>Operations</h1>
+      <p class="lead">Pipeline, model versions and service health. Detailed metrics are in Grafana; experiment details are in MLflow.</p>
+
+      <div class="ops-grid">
+        <section class="panel">
+          <h2>Serving model</h2>
+          <dl class="kv"><div><dt>Current</dt><dd id="model-current">—</dd></div><div><dt>Previous</dt><dd id="model-previous">—</dd></div></dl>
+          <div class="row-actions"><button class="secondary" type="button" id="switch-model" disabled>Switch to previous</button><a id="model-run" target="_blank" rel="noopener noreferrer" hidden>Training run ↗</a></div>
+        </section>
+        <section class="panel">
+          <h2>Services</h2>
+          <ul class="services" id="services"><li class="empty">Checking…</li></ul>
+        </section>
+        <section class="panel">
+          <h2>Tools</h2>
+          <ul class="tools">
+            <li><a id="link-grafana" target="_blank" rel="noopener noreferrer">Grafana dashboard ↗</a></li>
+            <li><a id="link-mlflow" target="_blank" rel="noopener noreferrer">MLflow experiments ↗</a></li>
+            <li><a id="link-prometheus" target="_blank" rel="noopener noreferrer">Prometheus ↗</a></li>
+            <li><a id="link-api" target="_blank" rel="noopener noreferrer">API documentation ↗</a></li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Pipeline</h2><div class="row-actions"><span class="pill" id="pipeline-state">—</span><button class="primary" type="button" id="run-pipeline">Run pipeline</button></div></div>
+        <div class="dag" id="dag"><p class="empty">The pipeline graph appears after the first CI run.</p></div>
+        <p class="note">Drawn from <code>dvc dag</code>. Arcs are stages that read an earlier output directly; the dashed deploy step runs only after every stage passes.</p>
+        <div class="table"><table><thead><tr><th>Stage</th><th>Status</th><th class="num">Time</th><th class="num">Rows</th><th class="num">Rows/s</th><th>Details</th></tr></thead><tbody id="stages"></tbody></table></div>
+      </section>
+
+      <section class="panel">
+        <h2>Pipeline runs and model switches</h2>
+        <ul class="runs" id="runs"><li class="empty">No runs yet.</li></ul>
+        <details class="log"><summary>CI log</summary><pre id="log">No output yet.</pre></details>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="help" aria-labelledby="help-title">
+    <h2 id="help-title">Using AirCast</h2>
+    <ol>
+      <li><strong>The date at the top</strong> is "today" inside AirCast. The data is real, from 2020, so AirCast replays it one day at a time.</li>
+      <li><strong>Forecast</strong> shows tomorrow's air quality for each city, made from today's measurements.</li>
+      <li><strong>Next day</strong> moves time forward. Yesterday's forecasts are then checked against what really happened, and the <strong>Accuracy</strong> tab shows how close they were.</li>
+      <li><strong>Jump to</strong> goes straight to any date. <strong>Start over</strong> goes back to the beginning.</li>
+      <li><strong>Operations</strong> is for the person running the system: retrain the model, switch versions and check services.</li>
+    </ol>
+    <button class="primary" type="button" id="help-close">Got it</button>
+  </dialog>
+</body>
+</html>

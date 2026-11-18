@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "gate": {
+    "min_validation_rows": 30,
+    "max_mae": 150.0,
+    "min_prediction": 0.0,
+    "max_prediction": 1000.0
+  },
+  "run_id": "01acd7bc7baf4046b46879fe52b02e07",
+  "metrics": {
+    "mae": 19.137719828837035,
+    "rmse": 30.02081644929274,
+    "baseline_mae": 23.123287671232877,
+    "training_seconds": 0.2146831919963006,
+    "validation_rows": 1095,
+    "training_rows": 4122
+  }
+}

@@ -1,0 +1,20 @@
+# The same environment is used for API, training, tests and MLflow serving.
+dvc==3.67.1
+fastapi==0.141.1
+httpx==0.28.1
+matplotlib==3.11.1
+mlflow==3.15.1
+numpy==2.5.2
+pandas==2.3.3
+prometheus-client==0.26.0
+pyarrow==25.0.1
+pydantic==2.13.4
+pyspark==4.2.0
+pytest==9.2.0
+pytest-html==4.1.1
+PyYAML==6.0.3
+requests==2.34.2
+ruff==0.14.4
+scikit-learn==1.9.0
+scipy==1.18.0
+uvicorn==0.52.3

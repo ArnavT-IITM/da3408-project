@@ -1,0 +1,71 @@
+{
+  "recorded_at_unix": 1794700885.7126422,
+  "source": "normal Compose stack after the code simplification (see docs/test-report.md)",
+  "services": {
+    "model-server": true,
+    "frontend": true,
+    "prometheus": true,
+    "grafana": true,
+    "mlflow": true,
+    "node-exporter": true,
+    "api": true
+  },
+  "model": {
+    "version": "6",
+    "status": "ready",
+    "previous_version": "7"
+  },
+  "prometheus_targets": {
+    "aircast": "up",
+    "grafana": "up",
+    "node": "up",
+    "prometheus": "up"
+  },
+  "alert_rules": {
+    "AircastExporterDown": "inactive",
+    "AircastServiceDown": "inactive",
+    "AircastInputDistributionChanged": "firing",
+    "AircastMissingPollutants": "inactive",
+    "AircastPipelineStale": "inactive"
+  },
+  "grafana_panels": [
+    "Service health",
+    "Serving model version",
+    "Forecasts with actual observations",
+    "Firing alerts",
+    "API requests per second",
+    "API p95 latency",
+    "Server errors per second",
+    "Latest stage throughput",
+    "Latest stage duration",
+    "Missing input fraction",
+    "Observed forecast MAE",
+    "Seasonal input drift",
+    "Host memory in use",
+    "Host CPU busy",
+    "Time since last successful pipeline",
+    "Exporter scrape health",
+    "Service probe response time",
+    "Service availability"
+  ],
+  "live_series": {
+    "aircast_service_up": 7,
+    "aircast_service_probe_seconds": 6,
+    "aircast_prediction_absolute_error_count": 3,
+    "aircast_drift_score": 3,
+    "aircast_pipeline_rows_per_second": 4,
+    "aircast_http_requests_total": 11,
+    "node_cpu_seconds_total": 128
+  },
+  "observed_mae_by_city": {
+    "Bengaluru": 10.11573441437429,
+    "Chennai": 10.672179317265666,
+    "Delhi": 27.499819162710192
+  },
+  "pipeline_rows_per_second": {
+    "ingest": 8458821.481942615,
+    "validate": 1226772.6354553679,
+    "transform": 214779.847579623,
+    "train": 1129.8275097296048
+  }
+}

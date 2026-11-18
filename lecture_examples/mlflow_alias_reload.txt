@@ -1,0 +1,26 @@
+SOURCE: DA3408/Lecture 10 -- MLflow_Serving_Exercise.ipynb
+CELL: 20 (zero-based notebook cell index)
+
+# 1. move the alias (metadata only — no files copied, instantaneous)
+champ_before = client.get_model_version_by_alias(NAME, "champion").version
+chall = client.get_model_version_by_alias(NAME, "challenger").version
+client.set_registered_model_alias(NAME, "champion", chall)
+print("champion now points to version", client.get_model_version_by_alias(NAME, "champion").version)
+print("...but the running server still answers with:", served_version(), " <- alias is resolved at START-UP")
+
+SOURCE: DA3408/Lecture 10 -- MLflow_Serving_Exercise.ipynb
+CELL: 21 (zero-based notebook cell index)
+
+# 2. restart the server so it re-resolves the alias
+m4util.stop(srv)
+srv = m4util.start(CMD, log="mlflow_serve.log"); m4util.wait_ready("http://localhost:5001/ping")
+print("after restart  :", served_version())
+
+SOURCE: DA3408/Lecture 10 -- MLflow_Serving_Exercise.ipynb
+CELL: 22 (zero-based notebook cell index)
+
+# 3. ROLLBACK = move the alias back and restart. Same two steps, same speed.
+client.set_registered_model_alias(NAME, "champion", champ_before)
+m4util.stop(srv)
+srv = m4util.start(CMD, log="mlflow_serve.log"); m4util.wait_ready("http://localhost:5001/ping")
+print("after rollback :", served_version())

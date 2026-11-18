@@ -1,0 +1,7 @@
+[cache]
+    type = "hardlink,copy"
+[core]
+    analytics = false
+    remote = localstore
+['remote "localstore"']
+    url = ../../aircast-dvc-store

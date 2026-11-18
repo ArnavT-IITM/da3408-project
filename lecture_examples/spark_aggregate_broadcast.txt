@@ -1,0 +1,38 @@
+SOURCE: DA3408/Lecture 7 -- Spark_ETL_Exercise.ipynb
+CELL: 8 (zero-based notebook cell index)
+
+df = spark.read.parquet(DATA_DIR)
+df.printSchema()
+
+# print the number of rows
+print("Number of rows:", df.count())
+print("Number of columns:", len(df.columns))
+print("Number of distinct users:", df.select("user_id").distinct().count())
+print("Number of distinct courses:", df.select("course_id").distinct().count())
+
+print("Number of partitions:", df.rdd.getNumPartitions())
+
+features = (
+    df.filter(F.col("event_type") == "click")
+      .groupBy("user_id", "course_id")
+      .agg(
+          F.count("*").alias("click_count"),
+          F.avg("session_length_sec").alias("avg_session_length"),
+      )
+)
+print("Pipeline built (nothing has executed yet).")
+
+SOURCE: DA3408/Lecture 7 -- Spark_ETL_Exercise.ipynb
+CELL: 19 (zero-based notebook cell index)
+
+from pyspark.sql.functions import broadcast
+
+spark.conf.set("spark.sql.autoBroadcastJoinThreshold", 10 * 1024 * 1024)  # 10MB, catalog is tiny
+
+joined_fast = features.join(broadcast(catalog_df), "course_id")
+
+fast_count = joined_fast.count()   # trigger execution first
+print("Broadcast join row count:", fast_count)
+
+# Now inspect the FINAL adaptive plan (post-execution), which reflects what actually ran
+joined_fast.explain("formatted")

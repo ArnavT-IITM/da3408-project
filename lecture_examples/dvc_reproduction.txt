@@ -1,0 +1,29 @@
+SOURCE: DA3408/Lecture 11 -- DVC for Continuous Integration.pdf
+PDF PAGE: 12 (one-based); verbatim pdftotext -layout extraction
+
+     Reproducing Pipelines
+       ●    dvc repro regenerate data pipeline results, by restoring the DAG deﬁned by stages listed in dvc.yaml.
+            This compares ﬁle hashes with dvc.lock to re-run only if needed. This is like make in software builds.
+
+       ●    Case 1: nothing changed, re-running pipeline stages is skipped.
+                            $ dvc repro train
+                                  'data/data.xml.dvc' didn't change, skipping
+                                  Stage 'prepare' didn't change, skipping
+                                  Stage 'featurize' didn't change, skipping
+                                  Stage 'train' didn't change, skipping
+                                  Data and pipelines are up to date.
+
+       ●    Case 2: a dependency changed, pipeline stages are re-run if needed.
+                            $ sed -i -e "s@max_features: 500@max_features: 1500@g" params.yaml
+                            $ dvc repro train
+                                  'data/data.xml.dvc' didn't change, skipping
+                                  Stage 'prepare' didn't change, skipping
+                                  Running stage 'featurize' with command:
+                                        python src/featurization.py data/prepared data/features
+                                  Updating lock file 'dvc.lock'
+                                  Running stage 'train' with command:
+                                        python src/train.py data/features model.pkl
+                                  Updating lock file 'dvc.lock'
+                                  To track the changes with git, run:
+                                        git add dvc.lock
+Francesco Casalegno – DVC                                                                                            26

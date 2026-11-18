@@ -1,0 +1,10 @@
+{
+  "name": "transform",
+  "status": "success",
+  "started_at": 1794700743.5126045,
+  "rows": 2589083,
+  "output_rows": 6027,
+  "duration_seconds": 12.054589986801147,
+  "rows_per_second": 214779.847579623,
+  "ended_at": 1794700755.5672088
+}

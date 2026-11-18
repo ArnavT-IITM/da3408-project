@@ -1,0 +1,27 @@
+stages:
+  ingest:
+    cmd: python -m app.pipeline ingest
+    deps: [data/raw, app/pipeline.py, app/common.py]
+    outs: [artifacts/ingestion.json]
+  validate:
+    cmd: python -m app.pipeline validate
+    deps: [artifacts/ingestion.json, app/pipeline.py]
+    params: [data.cities, data.pollutants]
+    outs: [artifacts/validation.json]
+  transform:
+    cmd: python -m app.pipeline transform
+    deps: [artifacts/ingestion.json, artifacts/validation.json, app/pipeline.py, app/features.py]
+    params: [data]
+    outs: [data/features.parquet, artifacts/features.json]
+  train:
+    cmd: mlflow run . -e train --env-manager local --experiment-name AirCast
+    deps: [data/features.parquet, artifacts/ingestion.json, artifacts/validation.json, artifacts/features.json, app/pipeline.py, app/model.py, app/common.py, app/features.py, MLproject, python_env.yaml, requirements.txt]
+    params: [model, data.train_end, data.validation_end, gate.min_validation_rows]
+    outs: [artifacts/candidate.json, artifacts/reference.json, artifacts/per_city.json, artifacts/feature_importance.png, artifacts/validation_predictions.csv]
+  evaluate:
+    cmd: python -m app.pipeline evaluate
+    deps: [artifacts/candidate.json, app/pipeline.py]
+    params: [gate]
+    metrics:
+      - artifacts/evaluation.json:
+          cache: false

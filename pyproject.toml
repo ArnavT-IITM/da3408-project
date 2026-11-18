@@ -1,0 +1,13 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# The browser check embeds JavaScript expressions that cannot be wrapped without changing them.
+"scripts/browser_e2e.py" = ["E501"]
